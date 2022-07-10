@@ -1,0 +1,22 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginxwebdemo-deployment
+spec:
+  replicas: 6
+  selector:
+    matchLabels:
+      "app": "nginxwebdemo"
+  template:
+    metadata:
+      name: nginxwebdemo-pod
+      labels:
+        "app": "nginxwebdemo"
+    spec:
+      containers:
+      - name: nginxwebdemo-container
+        image: mkbahk/nginxwebdemo:latest
+        ports:
+        - containerPort: 80
+---
