@@ -1,0 +1,35 @@
+node {
+    withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'dockerhub', usernameVariable: 'DOCKER_USER_ID', passwordVariable: 'DOCKER_USER_PASSWORD']]) {
+        stage('Git Pull') {
+            git 'https://github.com/mkbahk/nginxwebdemo.git'
+        }
+        stage('Unit Test') {
+    	    try {
+    	        sh(script: 'docker image rm mkbahk/nginxwebdemo:latest')  
+            } 
+            catch(e) {
+                echo "No nginxwebdemo container to remove"
+            }
+        }
+        stage('Docker Image Build') {
+            sh(script: 'docker build --force-rm=true -t mkbahk/nginxwebdemo:latest .')    
+        }
+        stage('Update Tag') {
+            sh(script: 'docker tag ${DOCKER_USER_ID}/nginxwebdemo:latest ${DOCKER_USER_ID}/nginxwebdemo:0.${BUILD_NUMBER}')
+        }
+        stage('Push to Dockerhub.com/mkbahk/nginxwebdemo:0.XX') { 
+            sh(script: 'docker login -u ${DOCKER_USER_ID} -p ${DOCKER_USER_PASSWORD}')
+            sh(script: 'docker push ${DOCKER_USER_ID}/nginxwebdemo:0.${BUILD_NUMBER}')
+            sh(script: 'docker push ${DOCKER_USER_ID}/nginxwebdemo:latest')
+        }
+        stage('Deploy to Kubernetes') {
+            try {
+                sh(script: 'kubectl apply -f https://raw.githubusercontent.com/mkbahk/nginxwebdemo/master/k8s-nginxwebdemo-deployment.yaml')
+                sh(script: 'kubectl apply -f https://raw.githubusercontent.com/mkbahk/nginxwebdemo/master/k8s-nginxwebdemo-service.yaml')
+            } catch(e) {
+                echo "nginxwebdemo service exists"
+            }
+            sh(script: 'kubectl set image -f https://raw.githubusercontent.com/mkbahk/nginxwebdemo/master/k8s-nginxwebdemo-deployment.yaml nginxwebdemo-container=mkbahk/nginxwebdemo:0.${BUILD_NUMBER}')
+        }
+    }
+}
