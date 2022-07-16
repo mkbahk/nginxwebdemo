@@ -2,10 +2,7 @@
 version : "3"
 services:
    nginxwebdemo:
-#      image: "mkbahk/nginxwebdemo:latest"
-      build:
-         context: .
-         dockerfile: ./Dockerfile
+      image: "mkbahk/nginxwebdemo:latest"
       deploy:
          replicas: 5
          restart_policy:
