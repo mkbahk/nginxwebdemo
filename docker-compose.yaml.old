@@ -1,0 +1,16 @@
+###
+version : "3"
+services:
+   nginxwebdemo:
+      image: "mkbahk/nginxwebdemo:latest"
+      ports:
+         - "8380-8389:80"
+      networks:
+         - nginx-net
+networks:
+   nginx-net:
+###
+#docker-compose up -d --scale nginxwebdemo=10
+#docker-compose up --scale nginxwebdemo=5
+#docker-compose down
+
