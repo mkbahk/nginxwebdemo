@@ -10,6 +10,9 @@ services:
          replicas: 5
          restart_policy:
             condition: on-failure
+            delay: 5s
+            max_attemptions: 3
+            window: 60s
          resources:
            limits:
              cpus: "0.1"
