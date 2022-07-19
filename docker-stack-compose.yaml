@@ -24,7 +24,7 @@ services:
 networks:
    nginx-net:
 ###
-#docker stack deploy -c docker-stack-compose.yaml nginxstack
+#docker stack deploy -c docker-stack-compose.yaml nginxwebdemostack
 #docker stack ls
 #docker service ls
-#docker stack rm nginxstack
+#docker stack rm nginxwebdemostack
