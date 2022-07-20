@@ -172,10 +172,7 @@ networks:
 #docker stack ls
 #docker service ls
 #docker stack rm nginxstack
-
-
-
-
+###
 
 
 docker stack deploy -c docker-stack-compose.yaml nginxwebdemostack
